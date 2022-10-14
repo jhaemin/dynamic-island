@@ -1,0 +1,64 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.darkroom {
+  background-color: #000;
+  width: 172px;
+  height: 50px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  will-change: width height;
+  box-sizing: border-box;
+}
+
+.hardware {
+  width: 86px;
+  height: 25px;
+  background-color: #000;
+  border-radius: 9999px;
+}
+
+.left, .right {
+  flex: 1;
+}
+
+.right {
+  padding-right: 13px;
+}
+
+.phone-booth {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.phone {
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone.refuse {
+  background-color: #db4445;
+}
+
+.phone.receive {
+  background-color: #77e570;
+}
+
+.phone.refuse .icon {
+  width: 17px;
+}
+
+.phone.receive .icon {
+  width: 13px;
+}
