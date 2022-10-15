@@ -1,6 +1,6 @@
 # Dynamic Island
 
-![Preview](./images/preview2.gif)
+![Preview](./images/preview.gif)
 
 [Live Demo](https://jhaemin.github.io/dynamic-island/)
 

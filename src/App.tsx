@@ -228,8 +228,8 @@ function App() {
               <img
                 src={
                   import.meta.env.MODE === 'development'
-                    ? '/profile2.png'
-                    : '/dynamic-island/profile2.png'
+                    ? '/profile.png'
+                    : '/dynamic-island/profile.png'
                 }
                 className="photo"
               />
