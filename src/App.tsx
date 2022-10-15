@@ -225,7 +225,14 @@ function App() {
         <animated.div className="darkroom" style={darkRoomStyles}>
           <animated.div className="left" style={expandedItemStyles}>
             <div className="caller">
-              <img src="/profile2.png" className="photo" />
+              <img
+                src={
+                  import.meta.env.MODE === 'development'
+                    ? '/profile2.png'
+                    : '/dynamic-island/profile2.png'
+                }
+                className="photo"
+              />
               <div className="caller-info">
                 <span className="device">iPhone</span>
                 <span className="name">Jang Haemin</span>
