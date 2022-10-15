@@ -2,7 +2,7 @@
 
 ![Preview](./images/preview.gif)
 
-[Live Demo](https://jhaemin.github.io/dynamic-island/)
+[Live Demo](https://dynamic-island.jhaemin.com)
 
 It is a web implementation of the **Dynamic Island** designed by Apple first introduced in [iPhone 14 Pro](https://www.youtube.com/watch?v=WuEH265pUy4).
 
