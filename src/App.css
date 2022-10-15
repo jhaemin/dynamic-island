@@ -177,3 +177,33 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+.expanded-mode-item-wrapper,
+.minimized-mode-item-wrapper {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.expanded-mode-left-item-wrapper,
+.minimized-mode-left-item-wrapper {
+  left: 0;
+}
+
+.expanded-mode-right-item-wrapper,
+.minimized-mode-right-item-wrapper {
+  right: 0;
+}
+
+.minimized-mode-left-item-wrapper {
+  padding-left: 10px;
+}
+
+.minimized-mode-left-item {
+  display: flex;
+  align-items: center;
+}
+
+.minimized-mode-left-item .photo {
+  height: 16px;
+}

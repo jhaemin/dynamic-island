@@ -1,9 +1,9 @@
-import './App.css'
-import { useSpring, animated } from 'react-spring'
+import { LogoGithub } from 'framework7-icons-plus/react'
 import { useRef, useState } from 'react'
+import { animated, useSpring } from 'react-spring'
+import './App.css'
 import phoneDownFill from './assets/phone_down_fill.svg'
 import phoneFill from './assets/phone_fill.svg'
-import { LogoGithub } from 'framework7-icons-plus/react'
 
 const Gaussian = animated('feGaussianBlur')
 const ColorMatrix = animated('feColorMatrix')
@@ -57,8 +57,8 @@ function App() {
                   tension: 250,
                   mass: 2,
                 },
-          transform: 'translateX(-39px)',
-          width: 112 + 33 + 6,
+          transform: 'translateX(-42px)',
+          width: 112 + 33 + 9,
           height: 32,
           delay:
             animationStatusRef.current === 'fromExpandedToLonelyIsland'
@@ -166,41 +166,11 @@ function App() {
         }
   )
 
-  const leftRoomStyles = useSpring(
-    isExpanded
-      ? {
-          config: {
-            tension: 250,
-            mass: 1.5,
-          },
-          transform: 'translateX(36px)',
-          opacity: 0,
-        }
-      : isLonelyIslandActivated
-      ? {
-          config: {
-            tension: 250,
-            mass: 2,
-          },
-          transform: 'translateX(-33px)',
-          opacity: 1,
-        }
-      : {
-          config: {
-            tension: 300,
-            mass: 0.1,
-          },
-          transform: 'translateX(0px)',
-          opacity: 1,
-        }
-  )
-
-  const leftRoomItemStyles = useSpring(
+  const minimizedModeLeftItemStyles = useSpring(
     isLonelyIslandActivated
       ? {
           config: {
-            tension: 250,
-            mass: 2,
+            duration: 200,
           },
           transform: 'scaleX(1)',
           filter: 'blur(0px)',
@@ -209,11 +179,10 @@ function App() {
         }
       : {
           config: {
-            tension: 300,
-            mass: 0.1,
+            duration: 150,
           },
-          transform: 'scaleX(0.4)',
-          filter: 'blur(5px)',
+          transform: 'scaleX(0.5)',
+          filter: 'blur(4px)',
           opacity: 0,
         }
   )
@@ -223,39 +192,47 @@ function App() {
       <h1 className="title">Dynamic Island</h1>
       <animated.div className="dynamic-island" style={dynamicIslandStyles}>
         <animated.div className="darkroom" style={darkRoomStyles}>
-          <animated.div className="left" style={expandedItemStyles}>
-            <div className="caller">
-              <img
-                src={
-                  import.meta.env.MODE === 'development'
-                    ? '/profile.png'
-                    : '/dynamic-island/profile.png'
-                }
-                className="photo"
-              />
-              <div className="caller-info">
-                <span className="device">iPhone</span>
-                <span className="name">Jang Haemin</span>
+          {/* Expanded mode left item */}
+          <div className="expanded-mode-item-wrapper expanded-mode-left-item-wrapper">
+            <animated.div className="left" style={expandedItemStyles}>
+              <div className="caller">
+                <img src="/profile.png" className="photo" />
+                <div className="caller-info">
+                  <span className="device">iPhone</span>
+                  <span className="name">Jang Haemin</span>
+                </div>
               </div>
-            </div>
-          </animated.div>
+            </animated.div>
+          </div>
 
-          <animated.div className="right" style={expandedItemStyles}>
-            <div className="phone-booth">
-              <div className="phone refuse">
-                <img src={phoneDownFill} className="icon" />
+          {/* Expanded mode right item */}
+          <div className="expanded-mode-item-wrapper expanded-mode-right-item-wrapper">
+            <animated.div className="right" style={expandedItemStyles}>
+              <div className="phone-booth">
+                <div className="phone refuse">
+                  <img src={phoneDownFill} className="icon" />
+                </div>
+                <div className="phone receive">
+                  <img src={phoneFill} className="icon" />
+                </div>
               </div>
-              <div className="phone receive">
-                <img src={phoneFill} className="icon" />
-              </div>
-            </div>
-          </animated.div>
+            </animated.div>
+          </div>
 
-          {/* <animated.div style={leftRoomStyles} className="left-room">
-          <animated.div style={leftRoomItemStyles} className="left-room-item">
-            <img src="/baedal.png" className="image" />
-          </animated.div>
-        </animated.div> */}
+          {/* Minimized mode left item */}
+          <div className="minimized-mode-item-wrapper minimized-mode-left-item-wrapper">
+            <animated.div
+              style={minimizedModeLeftItemStyles}
+              className="minimized-mode-left-item"
+            >
+              <img className="photo" src="/lyft.png" />
+            </animated.div>
+          </div>
+
+          {/* Minimized mode right item */}
+          <div className="minimized-mode-item-wrapper minimized-mode-right-item-wrapper">
+            <animated.div></animated.div>
+          </div>
         </animated.div>
 
         <svg width="90" height="52" className="meta-animation-parts">
