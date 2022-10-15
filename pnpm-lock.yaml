@@ -4,6 +4,7 @@ specifiers:
   '@types/react': ^18.0.17
   '@types/react-dom': ^18.0.6
   '@vitejs/plugin-react': ^2.1.0
+  framework7-icons-plus: ^1.7.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-spring: ^9.5.5
@@ -11,6 +12,7 @@ specifiers:
   vite: ^3.1.0
 
 dependencies:
+  framework7-icons-plus: 1.7.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-spring: 9.5.5_biqbaboplfbrettd7655fr4n2y
@@ -782,6 +784,11 @@ packages:
     resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
     engines: {node: '>=0.8.0'}
     dev: true
+
+  /framework7-icons-plus/1.7.0:
+    resolution: {integrity: sha512-EeV4dLzoCe7p9d4EiV6XDa3w6ninM7HR2+z5WcZ4ZVPJKE+kbeUG1nAZVi1c5PnJ0d8sumVdqRZ9urbVtpnIug==}
+    engines: {node: '>= 0.10.0'}
+    dev: false
 
   /fsevents/2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
