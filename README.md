@@ -21,6 +21,7 @@ Anyone who's interested in this project, please feel free to leave an issue or m
 ### Special Thanks
 
 - [Sunghyun Cho](https://github.com/anaclumos) - Thanks for a great idea suggestion.
+- [Yunseo Hwang](https://github.com/hseoy) - Thanks for better TypeScript typing.
 
 ### Appendix
 

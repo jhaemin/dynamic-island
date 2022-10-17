@@ -8,60 +8,68 @@ enum IslandMode {
   SQUARE,
 }
 
-type SharedIslandScene = {
-  name: string
+type SharedIslandScene<Name extends string> = {
+  name: Name
 }
 
-type ExpandedIslandScene = SharedIslandScene & {
+type ExpandedIslandScene<Name extends string> = SharedIslandScene<Name> & {
   mode: IslandMode.EXPANDED
   left: ReactNode
   right: ReactNode
 }
 
-type SplitIslandScene = SharedIslandScene & {
+type SplitIslandScene<Name extends string> = SharedIslandScene<Name> & {
   mode: IslandMode.SPLIT
   left: ReactNode
   right: ReactNode
 }
 
-type LargeIslandScene = SharedIslandScene & {
+type LargeIslandScene<Name extends string> = SharedIslandScene<Name> & {
   mode: IslandMode.LARGE
   left: ReactNode
   right: ReactNode
 }
 
-type SquareIslandScene = SharedIslandScene & {
+type SquareIslandScene<Name extends string> = SharedIslandScene<Name> & {
   mode: IslandMode.SQUARE
   item: ReactNode
+}
+
+type IslandScene<Name extends string = string> =
+  | ExpandedIslandScene<Name>
+  | SplitIslandScene<Name>
+  | LargeIslandScene<Name>
+  | SquareIslandScene<Name>
+
+export type DynamicIslandProps<
+  Name extends string,
+  T extends IslandScene<Name>
+> = {
+  scenes: T[]
+  currentScene: T['name']
 }
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : never
 
-type IslandScene =
-  | ExpandedIslandScene
-  | SplitIslandScene
-  | LargeIslandScene
-  | SquareIslandScene
-type IslandSceneOptions = DistributiveOmit<IslandScene, 'name'>
-
-export function makeScene<
+export const makeScene = <
   Name extends string,
-  SceneOptions extends IslandSceneOptions
->(name: Name, options: SceneOptions): { name: Name } & SceneOptions {
+  T extends DistributiveOmit<IslandScene, 'name'>
+>(
+  name: Name,
+  options: T
+): IslandScene<Name> => {
   return {
-    ...options,
     name,
+    ...options,
   }
 }
 
-export type DynamicIslandProps<T extends IslandScene[]> = {
-  scenes: T
-  currentScene: T[number]['name'] | IslandMode.DEFAULT
-}
-
-const DynamicIsland = <T extends IslandScene[]>({}: DynamicIslandProps<T>) => {
+const DynamicIsland = <
+  Name extends string,
+  T extends IslandScene<Name>
+>({}: DynamicIslandProps<Name, T>) => {
   return <></>
 }
 
