@@ -88,7 +88,7 @@
 }
 
 .right {
-  padding-right: 16px;
+  padding-right: 14px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -98,7 +98,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 8px;
 }
 
 .phone {
@@ -196,7 +196,7 @@
 }
 
 .minimized-mode-left-item-wrapper {
-  padding-left: 10px;
+  padding-left: 8px;
 }
 
 .minimized-mode-left-item {
@@ -206,4 +206,19 @@
 
 .minimized-mode-left-item .photo {
   height: 16px;
+}
+
+.lonely-island-item-wrapper {
+}
+
+.lonely-island-item {
+  position: absolute;
+  top: 0;
+  right: -42px;
+  width: 36px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
 }
