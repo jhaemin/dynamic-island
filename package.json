@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "framework7-icons-plus": "^1.7.0",
+    "jotai": "^1.8.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-spring": "^9.5.5"
