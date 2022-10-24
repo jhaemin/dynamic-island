@@ -71,6 +71,10 @@ export const makeScene = <
   }
 }
 
+export type SceneName<T extends IslandScene[]> =
+  | IslandMode.DEFAULT
+  | T[number]['name']
+
 const Gaussian = animated('feGaussianBlur')
 const ColorMatrix = animated('feColorMatrix')
 
