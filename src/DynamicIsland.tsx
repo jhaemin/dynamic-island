@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { animated, useSpring } from 'react-spring'
 import phoneDownFill from './assets/phone_down_fill.svg'
 import phoneFill from './assets/phone_fill.svg'
@@ -51,7 +51,10 @@ export type DynamicIslandProps<
   T extends IslandScene<Name>
 > = {
   scenes: T[]
-  currentScene: T['name'] | IslandMode.DEFAULT
+  /**
+   * When it's null, it means default scene.
+   */
+  currentSceneName: T['name'] | null
 }
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
@@ -71,17 +74,70 @@ export const makeScene = <
   }
 }
 
-export type SceneName<T extends IslandScene[]> =
-  | IslandMode.DEFAULT
-  | T[number]['name']
+export type SceneName<T extends IslandScene[]> = null | T[number]['name']
 
 const Gaussian = animated('feGaussianBlur')
 const ColorMatrix = animated('feColorMatrix')
 
 const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   scenes,
-  currentScene,
+  currentSceneName,
 }: DynamicIslandProps<Name, T>) => {
+  const transitionModeRef = useRef<TransitionMode | null>(null)
+  const sceneNameRef = useRef<typeof currentSceneName>(null)
+
+  const [nextSceneName, setNextSceneName] =
+    useState<typeof currentSceneName>(null)
+
+  useEffect(() => {
+    const previousSceneName = sceneNameRef.current
+    const previousScene = scenes.find(({ name }) => name === previousSceneName)
+
+    console.log(currentSceneName)
+
+    if (currentSceneName === null) {
+      setIsExpanded(false)
+      setIsLonelyIslandActivated(false)
+      return
+    }
+
+    // Animate to the next scene
+    const currentScene = scenes.find(({ name }) => name === currentSceneName)
+
+    if (!currentScene) {
+      throw Error(`Could not find the scene. SceneName: ${currentSceneName}`)
+    }
+
+    switch (currentScene.mode) {
+      case IslandMode.LARGE:
+        setIsExpanded(true)
+        setIsLonelyIslandActivated(false)
+        break
+
+      case IslandMode.SPLIT:
+        if (previousScene?.mode === IslandMode.LARGE) {
+          animationStatusRef.current = 'fromExpandedToLonelyIsland'
+        }
+
+        setIsExpanded(false)
+        setIsLonelyIslandActivated(true)
+        break
+
+      case null:
+        animationStatusRef.current = 'fromLonelyIslandToNormal'
+        setIsExpanded(false)
+        setIsLonelyIslandActivated(false)
+        break
+
+      default:
+        break
+    }
+
+    sceneNameRef.current = currentSceneName
+  }, [currentSceneName])
+
+  const currentScene = scenes.find(({ name }) => name === currentSceneName)
+
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLonelyIslandActivated, setIsLonelyIslandActivated] = useState(false)
   const animationStatusRef = useRef<
@@ -329,7 +385,13 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
 
       <svg width="90" height="52" className="meta-animation-parts">
         <defs>
-          <filter id="meta" width="400%" x="-150%" height="400%" y="-150%">
+          <filter
+            id="split-effect"
+            width="400%"
+            x="-150%"
+            height="400%"
+            y="-150%"
+          >
             <Gaussian
               in="SourceGraphic"
               {...lonelyIslandAttr}
@@ -343,7 +405,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
             ></ColorMatrix>
           </filter>
         </defs>
-        <g filter="url(#meta)">
+        <g filter="url(#split-effect)">
           <circle cx="26" cy="26" r="15" fill="black" />
           <animated.rect
             style={lonelyIslandStyles}

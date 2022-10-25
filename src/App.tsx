@@ -1,14 +1,24 @@
 import { LogoGithub } from 'framework7-icons-plus/react'
+import { atom, useAtom } from 'jotai'
 import { useRef, useState } from 'react'
 import { animated, useSpring } from 'react-spring'
 import './App.css'
 import phoneDownFill from './assets/phone_down_fill.svg'
 import phoneFill from './assets/phone_fill.svg'
+import DynamicIsland, { SceneName } from './DynamicIsland'
+import NavAndMusicScene from './scenes/NavAndMusicScene'
+import PhoneCallScene from './scenes/PhoneCallScene'
 
 const Gaussian = animated('feGaussianBlur')
 const ColorMatrix = animated('feColorMatrix')
 
+const scenes = [PhoneCallScene, NavAndMusicScene]
+
+const currentSceneNameAtom = atom<SceneName<typeof scenes>>(null)
+
 function App() {
+  const [currentSceneName, setCurrentSceneName] = useAtom(currentSceneNameAtom)
+
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLonelyIslandActivated, setIsLonelyIslandActivated] = useState(false)
   const animationStatusRef = useRef<
@@ -187,6 +197,27 @@ function App() {
         }
   )
 
+  const lonelyIslandItemStyles = useSpring(
+    isLonelyIslandActivated
+      ? {
+          config: {
+            duration: 200,
+          },
+          transform: 'translateX(0px) scaleX(1)',
+          filter: 'blur(0px)',
+          opacity: 1,
+          delay: 100,
+        }
+      : {
+          config: {
+            duration: 150,
+          },
+          transform: 'translateX(-100px) scaleX(0.5)',
+          filter: 'blur(4px)',
+          opacity: 0,
+        }
+  )
+
   return (
     <div className="demo">
       <h1 className="title">Dynamic Island</h1>
@@ -264,9 +295,35 @@ function App() {
             />
           </g>
         </svg>
+
+        <animated.div className="lonely-island-item-wrapper">
+          <animated.div
+            className="lonely-island-item"
+            style={lonelyIslandItemStyles}
+          >
+            {/* W */}
+          </animated.div>
+        </animated.div>
       </animated.div>
 
+      <DynamicIsland scenes={scenes} currentSceneName={currentSceneName} />
+
       <div className="controls">
+        <button
+          onClick={() => {
+            setCurrentSceneName((curr) => {
+              if (curr === 'PhoneCall') {
+                return 'NavAndMusic'
+              } else if (curr === 'NavAndMusic') {
+                return null
+              } else {
+                return 'PhoneCall'
+              }
+            })
+          }}
+        >
+          Toggle Scene
+        </button>
         <button
           onPointerDown={() => {
             if (isExpanded) {
