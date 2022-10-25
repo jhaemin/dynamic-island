@@ -25,4 +25,4 @@ Anyone who's interested in this project, please feel free to leave an issue or m
 
 ### Appendix
 
-Dynamic Island and iPhone are registered trademark of Apple Inc.
+Dynamic Island and iPhone are registered trademarks of Apple Inc.
