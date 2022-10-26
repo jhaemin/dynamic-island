@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { animated, useSpring } from 'react-spring'
+import { animated, SpringConfig, useSpring } from 'react-spring'
 import phoneDownFill from './assets/phone_down_fill.svg'
 import phoneFill from './assets/phone_fill.svg'
 
@@ -79,6 +79,11 @@ export type SceneName<T extends IslandScene[]> = null | T[number]['name']
 const Gaussian = animated('feGaussianBlur')
 const ColorMatrix = animated('feColorMatrix')
 
+const flatMove: SpringConfig = {
+  tension: 300,
+  mass: 0.1,
+}
+
 const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   scenes,
   currentSceneName,
@@ -129,10 +134,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           delay: transitionModeRef.current === 'fromSplitToLarge' ? 50 : 0,
         }
       : {
-          config: {
-            tension: 300,
-            mass: 0.1,
-          },
+          config: { ...flatMove },
           width: 112,
           height: 32,
           delay: transitionModeRef.current === 'fromSplitToDefault' ? 0 : 100,
@@ -144,10 +146,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
       ? {
           config:
             transitionModeRef.current === 'fromLargeToSplit'
-              ? {
-                  tension: 300,
-                  mass: 0.1,
-                }
+              ? { ...flatMove }
               : {
                   tension: 250,
                   mass: 2,
@@ -169,10 +168,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           delay: transitionModeRef.current === 'fromSplitToLarge' ? 50 : 0,
         }
       : {
-          config: {
-            tension: 300,
-            mass: 0.1,
-          },
+          config: { ...flatMove },
           transform: 'translateX(0px)',
           width: 112,
           height: 32,
@@ -217,10 +213,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           delay: transitionModeRef.current === 'fromLargeToSplit' ? 200 : 0,
         }
       : {
-          config: {
-            tension: 300,
-            mass: 0.1,
-          },
+          config: { ...flatMove },
           transform: 'translateX(0px)',
         }
   )
