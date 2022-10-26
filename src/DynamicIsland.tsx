@@ -5,7 +5,7 @@ import phoneFill from './assets/phone_fill.svg'
 
 export enum IslandMode {
   DEFAULT = 'Default',
-  EXPANDED = 'Expanded',
+  STRETCHED = 'Stretched',
   SPLIT = 'Split',
   LARGE = 'Large',
   SQUARE = 'Square',
@@ -17,8 +17,8 @@ type SharedIslandScene<Name extends string> = {
   name: Name
 }
 
-type ExpandedIslandScene<Name extends string> = SharedIslandScene<Name> & {
-  mode: IslandMode.EXPANDED
+type StretchedIslandScene<Name extends string> = SharedIslandScene<Name> & {
+  mode: IslandMode.STRETCHED
   left: ReactNode
   right: ReactNode
 }
@@ -41,7 +41,7 @@ type SquareIslandScene<Name extends string> = SharedIslandScene<Name> & {
 }
 
 type IslandScene<Name extends string = string> =
-  | ExpandedIslandScene<Name>
+  | StretchedIslandScene<Name>
   | SplitIslandScene<Name>
   | LargeIslandScene<Name>
   | SquareIslandScene<Name>
@@ -86,6 +86,9 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   const transitionModeRef = useRef<TransitionMode | null>(null)
   const sceneNameRef = useRef<typeof currentSceneName>(null)
 
+  const currentScene = scenes.find(({ name }) => name === currentSceneName)
+  const currentMode = currentScene?.mode ?? IslandMode.DEFAULT
+
   const [nextSceneName, setNextSceneName] =
     useState<typeof currentSceneName>(null)
 
@@ -96,13 +99,9 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
     console.log(currentSceneName)
 
     if (currentSceneName === null) {
-      setIsExpanded(false)
       setIsLonelyIslandActivated(false)
       return
     }
-
-    // Animate to the next scene
-    const currentScene = scenes.find(({ name }) => name === currentSceneName)
 
     if (!currentScene) {
       throw Error(`Could not find the scene. SceneName: ${currentSceneName}`)
@@ -110,7 +109,6 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
 
     switch (currentScene.mode) {
       case IslandMode.LARGE:
-        setIsExpanded(true)
         setIsLonelyIslandActivated(false)
         break
 
@@ -119,13 +117,11 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           animationStatusRef.current = 'fromExpandedToLonelyIsland'
         }
 
-        setIsExpanded(false)
         setIsLonelyIslandActivated(true)
         break
 
       case null:
         animationStatusRef.current = 'fromLonelyIslandToNormal'
-        setIsExpanded(false)
         setIsLonelyIslandActivated(false)
         break
 
@@ -136,9 +132,6 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
     sceneNameRef.current = currentSceneName
   }, [currentSceneName])
 
-  const currentScene = scenes.find(({ name }) => name === currentSceneName)
-
-  const [isExpanded, setIsExpanded] = useState(false)
   const [isLonelyIslandActivated, setIsLonelyIslandActivated] = useState(false)
   const animationStatusRef = useRef<
     | 'idle'
@@ -148,7 +141,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   >('idle')
 
   const dynamicIslandStyles = useSpring(
-    isExpanded
+    currentMode === IslandMode.LARGE
       ? {
           config: {
             tension: 250,
@@ -197,7 +190,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
             animationStatusRef.current = 'idle'
           },
         }
-      : isExpanded
+      : currentMode === IslandMode.LARGE
       ? {
           config: {
             tension: 250,
@@ -228,7 +221,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   )
 
   const expandedItemStyles = useSpring(
-    isExpanded
+    currentMode === IslandMode.LARGE
       ? {
           config: {
             duration: 200,
