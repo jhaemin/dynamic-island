@@ -87,7 +87,14 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   const sceneNameRef = useRef<typeof currentSceneName>(null)
 
   const currentScene = scenes.find(({ name }) => name === currentSceneName)
-  const currentMode = currentScene?.mode ?? IslandMode.DEFAULT
+
+  if (currentSceneName !== null && currentScene === undefined) {
+    throw Error(`Could not find the scene. SceneName: ${currentSceneName}`)
+  }
+
+  const [currentMode, setCurrentMode] = useState<IslandMode>(
+    currentScene?.mode ?? IslandMode.DEFAULT
+  )
 
   const [nextSceneName, setNextSceneName] =
     useState<typeof currentSceneName>(null)
@@ -96,49 +103,19 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
     const previousSceneName = sceneNameRef.current
     const previousScene = scenes.find(({ name }) => name === previousSceneName)
 
-    console.log(currentSceneName)
+    transitionModeRef.current = `from${
+      previousScene?.mode ?? IslandMode.DEFAULT
+    }To${currentScene?.mode ?? IslandMode.DEFAULT}`
 
+    // Default mode
     if (currentSceneName === null) {
-      setIsLonelyIslandActivated(false)
+      setCurrentMode(IslandMode.DEFAULT)
       return
     }
 
-    if (!currentScene) {
-      throw Error(`Could not find the scene. SceneName: ${currentSceneName}`)
-    }
-
-    switch (currentScene.mode) {
-      case IslandMode.LARGE:
-        setIsLonelyIslandActivated(false)
-        break
-
-      case IslandMode.SPLIT:
-        if (previousScene?.mode === IslandMode.LARGE) {
-          animationStatusRef.current = 'fromExpandedToLonelyIsland'
-        }
-
-        setIsLonelyIslandActivated(true)
-        break
-
-      case null:
-        animationStatusRef.current = 'fromLonelyIslandToNormal'
-        setIsLonelyIslandActivated(false)
-        break
-
-      default:
-        break
-    }
-
     sceneNameRef.current = currentSceneName
+    setCurrentMode(currentScene?.mode ?? IslandMode.DEFAULT)
   }, [currentSceneName])
-
-  const [isLonelyIslandActivated, setIsLonelyIslandActivated] = useState(false)
-  const animationStatusRef = useRef<
-    | 'idle'
-    | 'fromLonelyIslandToNormal'
-    | 'fromExpandedToLonelyIsland'
-    | 'fromLonelyIslandToExpanded'
-  >('idle')
 
   const dynamicIslandStyles = useSpring(
     currentMode === IslandMode.LARGE
@@ -149,10 +126,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           },
           width: 352,
           height: 72,
-          delay:
-            animationStatusRef.current === 'fromLonelyIslandToExpanded'
-              ? 50
-              : 0,
+          delay: transitionModeRef.current === 'fromSplitToLarge' ? 50 : 0,
         }
       : {
           config: {
@@ -161,16 +135,15 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           },
           width: 112,
           height: 32,
-          delay:
-            animationStatusRef.current === 'fromLonelyIslandToNormal' ? 0 : 100,
+          delay: transitionModeRef.current === 'fromSplitToDefault' ? 0 : 100,
         }
   )
 
   const darkRoomStyles = useSpring(
-    isLonelyIslandActivated
+    currentMode === IslandMode.SPLIT
       ? {
           config:
-            animationStatusRef.current === 'fromExpandedToLonelyIsland'
+            transitionModeRef.current === 'fromLargeToSplit'
               ? {
                   tension: 300,
                   mass: 0.1,
@@ -182,13 +155,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           transform: 'translateX(-42px)',
           width: 112 + 33 + 9,
           height: 32,
-          delay:
-            animationStatusRef.current === 'fromExpandedToLonelyIsland'
-              ? 100
-              : 0,
-          onStart: () => {
-            animationStatusRef.current = 'idle'
-          },
+          delay: transitionModeRef.current === 'fromLargeToSplit' ? 100 : 0,
         }
       : currentMode === IslandMode.LARGE
       ? {
@@ -199,10 +166,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           transform: 'translateX(0px)',
           width: 352,
           height: 72,
-          delay:
-            animationStatusRef.current === 'fromLonelyIslandToExpanded'
-              ? 50
-              : 0,
+          delay: transitionModeRef.current === 'fromSplitToLarge' ? 50 : 0,
         }
       : {
           config: {
@@ -212,11 +176,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           transform: 'translateX(0px)',
           width: 112,
           height: 32,
-          delay:
-            animationStatusRef.current === 'fromLonelyIslandToNormal' ? 0 : 100,
-          onStart: () => {
-            animationStatusRef.current = 'idle'
-          },
+          delay: transitionModeRef.current === 'fromSplitToDefault' ? 0 : 100,
         }
   )
 
@@ -231,10 +191,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
           filter: 'blur(0px)',
           opacity: 1,
           delay:
-            100 +
-            (animationStatusRef.current === 'fromLonelyIslandToExpanded'
-              ? 50
-              : 0),
+            100 + (transitionModeRef.current === 'fromSplitToLarge' ? 50 : 0),
           transform: 'scale(1)',
         }
       : {
@@ -250,17 +207,14 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   )
 
   const lonelyIslandStyles = useSpring(
-    isLonelyIslandActivated
+    currentMode === IslandMode.SPLIT
       ? {
           config: {
             tension: 250,
             mass: 2,
           },
           transform: 'translateX(42px)',
-          delay:
-            animationStatusRef.current === 'fromExpandedToLonelyIsland'
-              ? 200
-              : 0,
+          delay: transitionModeRef.current === 'fromLargeToSplit' ? 200 : 0,
         }
       : {
           config: {
@@ -272,7 +226,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   )
 
   const lonelyIslandAttr = useSpring(
-    isLonelyIslandActivated
+    currentMode === IslandMode.SPLIT
       ? {
           config: {
             duration: 400,
@@ -289,7 +243,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   )
 
   const minimizedModeLeftItemStyles = useSpring(
-    isLonelyIslandActivated
+    currentMode === IslandMode.SPLIT
       ? {
           config: {
             duration: 200,
@@ -310,7 +264,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   )
 
   const lonelyIslandItemStyles = useSpring(
-    isLonelyIslandActivated
+    currentMode === IslandMode.SPLIT
       ? {
           config: {
             duration: 200,
