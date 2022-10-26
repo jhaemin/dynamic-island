@@ -89,7 +89,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
   currentSceneName,
 }: DynamicIslandProps<Name, T>) => {
   const transitionModeRef = useRef<TransitionMode | null>(null)
-  const sceneNameRef = useRef<typeof currentSceneName>(null)
+  const previousSceneRef = useRef<IslandScene | null>(null)
 
   const currentScene = scenes.find(({ name }) => name === currentSceneName)
 
@@ -101,12 +101,8 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
     currentScene?.mode ?? IslandMode.DEFAULT
   )
 
-  const [nextSceneName, setNextSceneName] =
-    useState<typeof currentSceneName>(null)
-
   useEffect(() => {
-    const previousSceneName = sceneNameRef.current
-    const previousScene = scenes.find(({ name }) => name === previousSceneName)
+    const previousScene = previousSceneRef.current
 
     transitionModeRef.current = `from${
       previousScene?.mode ?? IslandMode.DEFAULT
@@ -118,7 +114,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
       return
     }
 
-    sceneNameRef.current = currentSceneName
+    previousSceneRef.current = currentScene ?? null
     setCurrentMode(currentScene?.mode ?? IslandMode.DEFAULT)
   }, [currentSceneName])
 
