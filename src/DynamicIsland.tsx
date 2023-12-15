@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { animated, SpringConfig, useSpring } from 'react-spring'
+import { SpringConfig, animated, useSpring } from 'react-spring'
 import phoneDownFill from './assets/phone_down_fill.svg'
 import phoneFill from './assets/phone_fill.svg'
 
@@ -103,6 +103,7 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
 
   useEffect(() => {
     const previousScene = previousSceneRef.current
+    previousSceneRef.current = currentScene ?? null
 
     transitionModeRef.current = `from${
       previousScene?.mode ?? IslandMode.DEFAULT
@@ -114,7 +115,6 @@ const DynamicIsland = <Name extends string, T extends IslandScene<Name>>({
       return
     }
 
-    previousSceneRef.current = currentScene ?? null
     setCurrentMode(currentScene?.mode ?? IslandMode.DEFAULT)
   }, [currentSceneName])
 
